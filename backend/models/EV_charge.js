@@ -5,7 +5,8 @@ const mongoose = require('mongoose');
 const ChargerSchema = mongoose.Schema({
     email:{
         type:String,
-        required:true
+        required:true,
+        unique:true
     },
     location:{
         type:String,
@@ -22,7 +23,26 @@ const ChargerSchema = mongoose.Schema({
     state:{
         type:String,
         required:true
-    }
+    },
+    password:{
+        type:String,
+        required:true
+    },
+    geometry: {
+        type: {
+          type: String, 
+          enum: ['Point'],
+          required: true
+        },
+        coordinates: {
+          type: [Number],
+          required: true
+        }
+      },
+      type:{
+          type:String,
+          required:true
+      }
 });
 
 const Charger = mongoose.model('Charger',ChargerSchema);

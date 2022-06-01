@@ -5,7 +5,7 @@ import GoogleAuthLogin from './googleauth';
 function App() {
   return (
     <div>
-      <GoogleAuthLogin /> 
+      {/* <GoogleAuthLogin />  */}
       {/* <FacebookAuthLogin />      */}
     </div>
   )
