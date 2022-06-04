@@ -1,14 +1,13 @@
-import React from 'react';
-import GoogleAuthLogin from './googleauth';
-// import FacebookAuthLogin from './FacebookAuthLogin';
+import React from "react";
+import Main from './components/Main';
+import Navbar from "./components/Navbar";
 
-function App() {
+const App = () =>{
   return (
     <div>
-      {/* <GoogleAuthLogin />  */}
-      {/* <FacebookAuthLogin />      */}
+      <Navbar />
+      <Main />
     </div>
-  )
+  );
 }
-
 export default App;
