@@ -17,8 +17,7 @@ const ChargerSchema = mongoose.Schema({
         required:true
     },
     slots:{
-        type:Number,
-        required:true
+        type:Number
     },
     state:{
         type:String,
@@ -41,7 +40,7 @@ const ChargerSchema = mongoose.Schema({
       },
       type:{
           type:String,
-          required:true
+        //   required:true
       }
 });
 

@@ -1,15 +1,15 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React,{Component} from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import './Map.css';
 // import { Nav,Navbar} from 'react-bootstrap';
 import Menu from './SelectorMenu';
+import axios from 'axios';
 
 mapboxgl.accessToken='pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
 
 // Sample data 
-const data = [
+const d = [
 	{
 		"location": "St. Georges School Alaknanda ND",
 		"city": "New Delhi",
@@ -30,7 +30,7 @@ const data = [
 	}
 ]
 
-class Mapp extends React.Component{
+class Mapp extends Component{
 
 	// Set up states for updating map 
 	constructor(props){
@@ -38,25 +38,33 @@ class Mapp extends React.Component{
 		this.state = {
 			lng: 77.260071,
 			lat: 28.543140,
-			zoom: 12
+			zoom: 12,
+			dz:[]
 		}
 	}
 
 	// Create map and lay over markers
-	componentDidMount(){
-		const map = new mapboxgl.Map({
+	async componentDidMount(){
+		const map = await new mapboxgl.Map({
 			container: this.mapContainer,
 			style: 'mapbox://styles/mapbox/dark-v10', 
 			center: [this.state.lng, this.state.lat],
 			zoom: this.state.zoom
 		})
 
-		data.forEach((location) => {
+		// d = await axios.get('/api/getstations/');
+		// console.log('data got is',d.data);
+		// this.setState({
+		// 	dz:d.data.map((p)=>(p))
+		// })
+		// console.log(this.state.dz);
+
+		d.forEach((location) => {
 			console.log(location)
 			var marker = new mapboxgl.Marker()
 							.setLngLat(location.coordinates)
 							.setPopup(new mapboxgl.Popup({ offset: 30 })
-							.setHTML('<h4>' + location.city + '</h4>' + location.location))
+							.setHTML('<h4>' + location.city + '</h4>' + location.location))  //add a booking button here and it's functionality
 							.addTo(map);
 
 		})

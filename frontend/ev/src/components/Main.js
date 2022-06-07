@@ -1,28 +1,23 @@
 import React from "react";
-import {Route} from 'react-router-dom';
-import LoginAdmin from './LoginAdmin';
-import LoginUser from './LoginUser';
-import Register from './RegPage';
-import {Link} from 'react-router-dom';
-import Map from './Mapp';
+import {useHistory} from 'react-router-dom';
 
-const mainPage = ()=>{
+function MainPage(){
+    const history = useHistory();
+
+    const Redirectuser =  ()=> {
+        history.push('/user/login');
+    }
+
+    const Redirectstation = ()=> {
+      history.push('/admin');
+    }
+
     return(
-        <>
-        <Route path="/user/login">
-      <LoginUser />
-    </Route>
-    <Route path="/admin/login">
-      <LoginAdmin />
-    </Route>
-    <Route path="/register">
-     <Register/>
-   </Route>
-   <Route path="/map">
-     <Map />
-   </Route>
-   </>
+        <div>
+          <button onClick={Redirectuser}>User</button>
+          <button onClick={Redirectstation}>Charging Station</button>
+        </div>
     );
 };
 
-export default mainPage;
+export default MainPage;

@@ -1,16 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const dotenv = require("dotenv"); // Define the dotenv package
+dotenv.config(); 
 const Charger = require('./models/EV_charge.js');
 const dbUrl = 'mongodb://localhost:27017/Electric';
-const dotenv = require('dotenv');
 const { OAuth2Client } = require('google-auth-library');
 const User = require('./models/User.js');
 const generateToken = require('./utils/token.js');
-// console.log(process.env.MAPBOX_TOKEN);
-
-// const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
-// const mapBoxToken = process.env.MAPBOX_TOKEN;
-// const geocoder = mbxGeocoding({accessToken:mapBoxToken});
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+const mapBoxToken = process.env.REACT_APP_MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({accessToken:mapBoxToken});
 
 mongoose.connect(dbUrl, {
     useNewUrlParser: true,
@@ -21,7 +20,6 @@ mongoose.connect(dbUrl, {
       console.log(err);
   })
 
-dotenv.config();
 const client = new OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID);
 
 const app = express();
@@ -47,7 +45,7 @@ app.post('/api/auth/google', async (req, res) => {
     const { name, email } = ticket.getPayload();
     const founduser = await User.findOne({email:email});
     // console.log("founduser is ",founduser);
-    if(founduser.email !== null){
+    if(founduser !== null){
         res.status(201);
         res.json(founduser);
     }else{
@@ -100,40 +98,47 @@ app.post('/api/station/login',async(req,res)=>{
 });
 
 // station register 
-app.post('/api/station/register', async(req,res)=>{
-    const {location,email,maxslots,state,password,type} = req.body;
-    // const geoData = await geocoder.forwardGeocode({
-    //     query:location,
-    //     limit:1
-    // }).send();
+app.post('/api/register', async(req,res)=>{
 
-    const foundstation = Charger.findOne({email:email});
+    // console.log('req body is : ', req.body);
+    const {location,email,maxslots,state,password} = req.body;
+    // console.log('location is : ', location);
+    const geoData = await geocoder.forwardGeocode({
+        query:location,
+        limit:1
+    }).send();
+
+    console.log('geodata is : ', geoData.body.features[0].geometry);
+
+    const foundstation = await Charger.findOne({email:email});
+    console.log('foundstation is : ',foundstation);
     if(foundstation){
         res.status(400);
         throw new Error('User Email already Exists');
     }
-    const station = await Charger.create({
+    const station = await new Charger({
         location,
         email,
-        maxslots,
+        maxSlots: maxslots,
         slots:0,
         state,
         password,
-        type,
         geometry:geoData.body.features[0].geometry
     })
+    console.log(station);
 
     if(station){
         // add saving scene here;
+        station.save();
         res.status(201).json({
             _id:station._id,
             location:station.location,
             email:station.email,
-            maxslots:station.maxslots,
+            maxSlots:station.maxSlots,
             slots:0,
             state:station.state,
-            type:station.type,
             geometry:station.geometry,
+            // type:station.type,
             token:generateToken(station._id)
         });
     }else{
@@ -141,6 +146,34 @@ app.post('/api/station/register', async(req,res)=>{
         throw new Error('Invalid station');
     }
 });
+
+app.get('/api/getstations/',async(req,res)=> {
+    const dd = await Charger.find({});
+    console.log(dd);
+    res.status(201).json(dd);
+})
+
+app.get('/api/admin/bookings/',async(req,res)=>{
+    const {email,username} = req.body;
+    const user = await User.find({email:email});
+    if(user){
+        const cs = await Charger.find({});
+        let avail = [];
+        let non_avail = [];
+        non_avail = cs.filter(s => user.bookings.station_id.includes(s._id));
+        avail = cs.filter(s => !user.bookings.station_id.includes(s._id));
+
+        res.status(201).json({
+            available:avail,
+            non_available:non_avail
+        })
+    }else{
+        res.status(404);
+        throw new error('User not logged in');
+    }
+})
+
+
 
 
 // accept/decline 
