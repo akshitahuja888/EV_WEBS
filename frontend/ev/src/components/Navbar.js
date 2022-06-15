@@ -1,16 +1,23 @@
 import React from 'react';
 import { Nav,Navbar , Container } from 'react-bootstrap';
-const navbar = ()=>{
+import {useHistory} from 'react-router-dom';
+function Navbr(){
+
+    const history = useHistory();
+    // const history = useHistory();
+    const HandleLogout = () => {
+        localStorage.removeItem('loginData');
+        history.push('/');
+    }
+
     return(
         <>
         <Navbar bg="dark" variant="dark">
             <Container>
             <Navbar.Brand href="/">EV_PROJECT</Navbar.Brand>
             <Nav className="me-auto">
-            <Nav.Link href="/user/login">Login As User</Nav.Link>
-            <Nav.Link href="/admin/login">Login As Admin</Nav.Link>
-            <Nav.Link href="/register">Register</Nav.Link>
-            <Nav.Link href="/map">Map</Nav.Link>
+            <Nav.Link >Map</Nav.Link>
+            <Nav.Link onClick={HandleLogout} >Logout</Nav.Link>
             </Nav>
             </Container>
         </Navbar>
@@ -18,4 +25,4 @@ const navbar = ()=>{
     );
 };
 
-export default navbar;
+export default Navbr;

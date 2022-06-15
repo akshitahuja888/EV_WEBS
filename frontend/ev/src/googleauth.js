@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { GoogleLogin } from 'react-google-login';
 import { useState } from 'react';
 import { gapi } from 'gapi-script';
+import {useHistory} from 'react-router-dom';
 
 function GoogleAuthLogin() {
   useEffect(() => {
@@ -20,6 +21,7 @@ function GoogleAuthLogin() {
     localStorage.getItem('loginData')
     ? JSON.parse(localStorage.getItem('loginData'))
     : null);
+  const history = useHistory();
 
     const handleFailure = (result) => {
       console.log("failure is : ",result);
@@ -40,9 +42,11 @@ function GoogleAuthLogin() {
           });
       
           const data = await res.json();
+          // console.log('data is : ',data);
           setLoginData(data);
           localStorage.setItem('loginData', JSON.stringify(data));
-      }
+          history.push(`/user/${data._id}`);
+        }
 
       const handleLogout = () => {
           localStorage.removeItem('loginData');
