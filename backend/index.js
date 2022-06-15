@@ -73,6 +73,7 @@ app.post('/api/auth/google', async (req, res) => {
 app.post('/api/station/login',async(req,res)=>{
     const {email,password} = req.body;
     const foundstation = await Charger.findOne({email:email});
+    console.log('wohoo it is :', foundstation);
     if(foundstation && (await foundstation.matchPassword(password))){
         const token = generateToken(foundstation._id);
         res.cookie('jwt', token, {
@@ -101,7 +102,6 @@ app.post('/api/station/login',async(req,res)=>{
 // station register 
 app.post('/api/register/', async(req,res)=>{
 
-    try{
         console.log('req body is : ', req.body);
         const {username,location,email,maxslots,state,password,type} = req.body;
         const geoData = await geocoder.forwardGeocode({
@@ -149,9 +149,6 @@ app.post('/api/register/', async(req,res)=>{
             res.status(404);
             throw new Error('Invalid station');
         }
-    }catch(err){
-        console.log(err);
-    }
 });
 
 app.get('/api/getstations/',async(req,res)=> {
