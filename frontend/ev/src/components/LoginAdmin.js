@@ -28,9 +28,9 @@ function LoginAdmin(){
         
             const data = await res.json();
             setLoginData(data);
-            localStorage.setItem('loginData', JSON.stringify(data));
+            localStorage.setItem('StationData', JSON.stringify(data));
 
-            if(loginData!==null)history.push(`/user/${loginData._id}`);
+            if(loginData!==null) history.push(`/admin/`);
         }
 
         const handleChange = (evt) =>{
@@ -46,12 +46,12 @@ function LoginAdmin(){
                 <Form onSubmit={loginHandler} className="col-12">
                     <Form.Group className="mb-3" controlId="formBasicEmail">
                         <Form.Label>Email address</Form.Label>
-                        <Form.Control type="email" name="email" placeholder="Enter email" value={values.email} onChange={handleChange} />
+                        <Form.Control type="email" name="email" placeholder="Enter email" value={values.email} onChange={handleChange} required={true} />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicPassword">
                         <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" name="password" placeholder="Enter Password" value={values.password} onChange={handleChange} />
+                        <Form.Control type="password" name="password" placeholder="Enter Password" value={values.password} onChange={handleChange} required={true} />
                     </Form.Group>
 
                     <Button variant="primary" type="submit">Submit</Button>

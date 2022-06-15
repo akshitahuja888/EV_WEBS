@@ -11,13 +11,10 @@ const UserBooksSchema = mongoose.Schema({
         type:Boolean,
         default:false
     },
-    station_id:[
-        {
+    station_id:{
             type:mongoose.Schema.Types.ObjectId,
             ref:'Charger'
-        }
-    ]
-
+    }
 })
 
 const UserBooks = mongoose.model('UserBooks',UserBooksSchema);
